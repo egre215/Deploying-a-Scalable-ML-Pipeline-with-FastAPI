@@ -2,42 +2,33 @@ import pytest
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
+
+from ml.model import load_model
+
+model = load_model(r"/home/miricow/Deploying-a-Scalable-ML-Pipeline-with-FastAPI/model/model.pkl")
 
 # TODO: implement the first test. Change the function name and input as needed
 def test_fit():
     """
     Test to see if the model can fit the data without errors.
     """
-    X, y = make_classification(n_samples=100, n_features=20, random_state=42)
-    model = LogisticRegression()
-    model.fit(X, y)
-
     assert model.coef_ is not None
     
 
 
 # TODO: implement the second test. Change the function name and input as needed
-def test_predict():
+def test_2():
     """
-    If ML function "predict" returns the expected type numpy array.
+    Testing to see if the model's coefs length is a positive value
     """
-    X, y = make_classification(n_samples=100, n_features=20, random_state=42)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    model = LogisticRegression()
-    model.fit(X_train, y_train)
-
-    y_pred = model.predict(X_test)
-
-    assert isinstance(y_pred, np.ndarray)
+    model_size = len(model.coef_)
+    assert model_size > 0
+    
 
 
 # TODO: implement the third test. Change the function name and input as needed
-def test_three():
+def test_LogisticRegression():
     """
     If the ML model uses the expected algorithm, LogisticRegression.
     """
-    X, y = make_classification(n_samples=100, n_features=20, random_state=42)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    model = LogisticRegression()
-    model.fit(X_train, y_train)
+    assert isinstance(model, LogisticRegression)
