@@ -7,7 +7,7 @@ from train_model import cat_features
 
 @pytest.fixture(scope="module")
 def data():
-    data = pd.read_csv("data/cleaned_census.csv")
+    data = pd.read_csv("data/census.csv")
     train, test = train_test_split(data, test_size=0.20)
 
     X_train, y_train, encoder, lb = process_data(
