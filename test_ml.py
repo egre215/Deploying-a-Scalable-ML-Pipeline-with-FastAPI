@@ -2,33 +2,39 @@ import pytest
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.datasets import make_classification
+from ml.model import train_model, inference, compute_model_metrics
+from train_model import cat_features
 
-from ml.model import load_model
+@pytest.fixture(scope="module")
+def data():
+    data = pd.read_csv("data/cleaned_census.csv")
+    train, test = train_test_split(data, test_size=0.20)
 
-model = load_model(r"/home/miricow/Deploying-a-Scalable-ML-Pipeline-with-FastAPI/model/model.pkl")
+    X_train, y_train, encoder, lb = process_data(
+        train, categorical_features=cat_features, label="salary", training=True
+    )
+    return X_train, y_train
 
-# TODO: implement the first test. Change the function name and input as needed
-def test_fit():
-    """
-    Test to see if the model can fit the data without errors.
-    """
+def test_model(data):
+    X_train, y_train = data
+    model = train_model(X_train, y_train)
+    
     assert model.coef_ is not None
-    
-
-
-# TODO: implement the second test. Change the function name and input as needed
-def test_2():
-    """
-    Testing to see if the model's coefs length is a positive value
-    """
-    model_size = len(model.coef_)
-    assert model_size > 0
-    
-
-
-# TODO: implement the third test. Change the function name and input as needed
-def test_LogisticRegression():
-    """
-    If the ML model uses the expected algorithm, LogisticRegression.
-    """
     assert isinstance(model, LogisticRegression)
+
+def test_inference(data):
+    X_train, y_train = data
+    model = train_model(X_train, y_train)
+    y_pred = inference(model, X_train)
+    
+    assert isinstance(y_pred, np.ndarray)
+
+def test_compute_model_metrics(data):
+    X_train, y_train = data
+    model = train_model(X_train, y_train)
+    y_pred = inference(model, X_train)
+    precision, recall, fbeta = compute_model_metrics(y=y_train, preds=y_pred)
+    
+    assert precision > 0
+    assert recall > 0
+    assert fbeta > 0
